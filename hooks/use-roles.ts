@@ -3,8 +3,10 @@ import { ethers } from 'ethers'
 import { CONTRACT_ADDRESSES, ROLES, RoleType } from '@/config/contracts'
 import GameTokenABI from '@/lib/abi/GameToken.json'
 import { toast } from '@/components/ui/toast'
+import { useAdmin } from './use-admin'
 
 export function useRoles() {
+  const { isAdmin } = useAdmin()
   const [isGranting, setIsGranting] = useState(false)
   const [isRevoking, setIsRevoking] = useState(false)
 
@@ -15,11 +17,9 @@ export function useRoles() {
   }
 
   const checkAdminAccess = async (contract: ethers.Contract, address: string) => {
-    console.log('Checking admin access for address:', address)
-    const DEFAULT_ADMIN_ROLE = ethers.ZeroHash
-    const hasRole = await contract.hasRole(DEFAULT_ADMIN_ROLE, address)
-    console.log('Has admin role:', hasRole)
-    if (!hasRole) {
+    const hasAdminRole = await contract.hasAdminRole(address)
+    
+    if (!hasAdminRole) {
       toast({
         title: "Access Denied",
         description: "Your wallet does not have admin privileges",
@@ -28,6 +28,7 @@ export function useRoles() {
       })
       throw new Error('Missing admin role - Your wallet does not have admin privileges')
     }
+    return true
   }
 
   const hasRole = async (contract: ethers.Contract, address: string, role: RoleType) => {

@@ -428,4 +428,9 @@ export class GameContracts {
   public getSpacePuzzleNFT() {
     return this.spacePuzzleNFT
   }
+
+  // Add this public getter method to GameContracts class
+  public getGameToken() {
+    return this.gameToken;
+  }
 }

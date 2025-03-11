@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Award, Coins, Gamepad2, Home, LayoutDashboard, Rocket, Settings, ShieldCheck } from "lucide-react"
+import { useWalletRoles } from '@/hooks/use-wallet-roles'
 
 const sidebarNavItems = [
   {
@@ -42,6 +43,18 @@ const sidebarNavItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { admin: isAdmin, minter: isMinter } = useWalletRoles()
+
+  const filteredNavItems = sidebarNavItems.filter(item => {
+    switch (item.href) {
+      case "/dashboard/admin":
+        return isAdmin
+      case "/dashboard/tokens":
+        return isAdmin || isMinter
+      default:
+        return true
+    }
+  })
 
   return (
     <div className="flex h-full flex-col gap-2">
@@ -53,7 +66,7 @@ export function Sidebar() {
       </div>
       <ScrollArea className="flex-1 px-2">
         <div className="flex flex-col gap-1 py-2">
-          {sidebarNavItems.map((item) => (
+          {filteredNavItems.map((item) => (
             <Button
               key={item.href}
               variant={pathname === item.href ? "secondary" : "ghost"}

@@ -6,7 +6,7 @@ import { useWallet } from "@/hooks/use-wallet"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useContracts } from "@/hooks/use-contracts"
 import { useRoles } from "@/hooks/use-roles"
 import { Loader2 } from "lucide-react"
@@ -14,11 +14,15 @@ import { toast } from "@/components/ui/use-toast"
 import { useTokenManagement } from "@/hooks/use-token-management"
 import { useAchievements } from "@/hooks/use-achievements"
 import { AdminGuard } from "@/components/auth/admin-guard"
+import { useAdmin } from "@/hooks/use-admin"
+import { useWalletRoles } from "@/hooks/use-wallet-roles"
+import { useRouter } from "next/navigation"
 
 export default function AdminPage() {
-  const { isConnected } = useWallet()
-  const { contracts } = useContracts()
+  const { address } = useWallet()
+  const { isAdmin, isChecking } = useAdmin()
   const { grantRole, revokeRole, isGranting, isRevoking } = useRoles()
+  const { contracts } = useContracts()
   const { 
     mintTokens, 
     burnTokens, 
@@ -60,15 +64,20 @@ export default function AdminPage() {
   const [mintPlayerAddress, setMintPlayerAddress] = useState("")
   const [mintAchievementId, setMintAchievementId] = useState("")
   const [checkPlayerAddress, setCheckPlayerAddress] = useState("")
+  const { admin: isAdminRole } = useWalletRoles()
+  const router = useRouter()
 
-  if (!isConnected) {
+  useEffect(() => {
+    if (!isAdminRole) {
+      router.push('/dashboard')
+    }
+  }, [isAdminRole, router])
+
+  if (!isAdminRole) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Connect Wallet</CardTitle>
-          <CardDescription>Please connect your wallet to access admin functions.</CardDescription>
-        </CardHeader>
-      </Card>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
     )
   }
 

@@ -12,6 +12,7 @@ export function useActivity() {
 
   // Function to fetch all data
   const fetchData = async () => {
+    // Don't try to fetch if wallet isn't connected yet
     if (!contracts || !address) {
       setIsLoading(false)
       return
@@ -28,13 +29,21 @@ export function useActivity() {
       setActivities(events)
     } catch (error) {
       console.error('Error fetching activity data:', error)
+      setBalanceHistory([])
+      setActivities([])
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Fetch data when component mounts or when dependencies change
+  // Add delay for reconnection like in use-admin
   useEffect(() => {
+    if (!address && localStorage.getItem("walletConnected") === "true") {
+      console.log('Activity: Waiting for wallet reconnection...')
+      const timer = setTimeout(() => fetchData(), 1000)
+      return () => clearTimeout(timer)
+    }
+    
     fetchData()
   }, [address, contracts, timeRange])
 

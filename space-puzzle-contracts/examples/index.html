@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Puzzle Game - Blockchain Integration</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f0f0f0;
+      }
+      .section {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .achievement {
+        background: #f8f8f8;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+      button {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #45a049;
+      }
+      button:disabled {
+        background: #cccccc;
+        cursor: not-allowed;
+      }
+      input {
+        padding: 8px;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .status {
+        color: #666;
+        font-size: 0.9em;
+      }
+      #gameContent {
+        display: none;
+      }
+      #walletSection {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 8px;
+        margin: 20px auto;
+        max-width: 600px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      #connectWalletBtn {
+        background: #2196f3;
+        color: white;
+        font-size: 16px;
+        padding: 15px 30px;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        margin: 20px 0;
+        transition: background-color 0.3s ease;
+      }
+      #connectWalletBtn:hover {
+        background: #1976d2;
+      }
+      .wallet-status {
+        margin: 15px 0;
+        font-size: 16px;
+        color: #333;
+      }
+      .network-error {
+        color: #d32f2f;
+        background: #ffebee;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 10px 0;
+        display: none;
+        text-align: left;
+      }
+      .network-error code {
+        background: #fff;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="walletSection">
+      <h1>Space Puzzle Game</h1>
+      <h2>Connect Your Wallet</h2>
+      <p class="wallet-status" id="walletStatus">
+        Please connect your MetaMask wallet to continue
+      </p>
+      <button id="connectWalletBtn">Connect MetaMask</button>
+      <div class="network-error" id="networkError">
+        <strong>Wrong Network Detected!</strong><br />
+        Please switch to Core Testnet network to continue.<br /><br />
+        Network Details:<br />
+        <ul style="text-align: left; margin: 10px 0">
+          <li>Network Name: <code>Core Testnet</code></li>
+          <li>RPC URL: <code>https://rpc.test2.btcs.network</code></li>
+          <li>Chain ID: <code>1114</code></li>
+          <li>Currency Symbol: <code>CORE</code></li>
+          <li>Block Explorer: <code>https://scan.test2.btcs.network</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="gameContent">
+      <div class="section">
+        <h2>Key Management</h2>
+        <div>
+          <p>Current Balance: <span id="keyBalance">Loading...</span> keys</p>
+          <input
+            type="number"
+            id="tokenizeAmount"
+            placeholder="Amount of keys"
+            min="1"
+          />
+          <button id="tokenizeBtn">Tokenize Keys</button>
+          <button id="detokenizeBtn">Detokenize Keys</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Daily Rewards</h2>
+        <div id="rewardStatus" class="status">Loading reward status...</div>
+        <button id="claimRewardBtn">Claim Daily Reward</button>
+      </div>
+
+      <div class="section">
+        <h2>Achievements</h2>
+        <div>
+          <input
+            type="number"
+            id="achievementId"
+            placeholder="Achievement ID"
+            min="1"
+          />
+          <button id="checkAchievementBtn">Check Progress</button>
+        </div>
+        <div id="achievements">Loading achievements...</div>
+      </div>
+
+      <div class="section">
+        <h2>Transaction History</h2>
+        <div id="transactions" class="status">No recent transactions</div>
+      </div>
+    </div>
+
+    <!-- Load ethers.js from unpkg CDN -->
+    <script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <!-- Load our contract helper -->
+    <script src="game-contract-helper.js"></script>
+
+    <!-- Load our main frontend code -->
+    <script src="frontend-example.js"></script>
+  </body>
+</html>

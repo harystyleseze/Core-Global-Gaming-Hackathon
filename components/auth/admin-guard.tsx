@@ -8,34 +8,25 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { Loader2 } from "lucide-react"
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
+  const { isAdmin, isChecking } = useAdmin()
   const router = useRouter()
-  const { isAdmin } = useAdmin()
   const { isConnected } = useWallet()
 
   useEffect(() => {
-    if (isConnected && !isAdmin) {
+    if (!isChecking && !isAdmin) {
       router.push('/dashboard')
     }
-  }, [isAdmin, isConnected, router])
+  }, [isAdmin, isChecking, router])
 
-  if (!isConnected) {
+  if (isChecking) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Connect Wallet</CardTitle>
-          <CardDescription>Please connect your wallet to access admin features.</CardDescription>
-        </CardHeader>
-      </Card>
-    )
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     )
   }
+
+  if (!isAdmin) return null
 
   return <>{children}</>
 } 
